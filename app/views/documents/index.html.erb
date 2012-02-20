@@ -1,10 +1,9 @@
-<%= s3_http_upload_tag     :key => 'uploads', 
-                           :bucket => 'jesuspower',
+<%= s3_http_upload_tag     :key => 'xxxxx/blar/123', 
                            :content_type => 'image/jpeg', 
-                           :redirect => image_processing_url,
+                           :redirect => "amazon.com",
                            :acl => 'public-read',
-                           :max_filesize => 5.megabytes,
-                           :submit_button => '<input type="submit" value="Upload" class="button" id="upload-button">',
+                           :max_filesize => 500.megabytes,
+                           :submit_button => submit_tag('Upload'),
                            :form => {:style => 'display: inline;'} %>
 
 
