@@ -1,0 +1,9 @@
+development:
+  bucket: jesuspower
+  access_key_id: AKIAIAZ7FYZ3A7WS2EFQ
+  secret_access_key: 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
+
+production:
+  bucket: jesuspower
+  access_key_id: AKIAIAZ7FYZ3A7WS2EFQ
+  secret_access_key: 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

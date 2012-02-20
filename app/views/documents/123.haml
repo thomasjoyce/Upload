@@ -1,0 +1,21 @@
+%form#file_upload(action="https://jesuspower.s3.amazonaws.com" method="post" enctype="multipart/form-data")
+
+  %input{:type => :hidden, :name => :key}
+  %input{:type => :hidden, :name => "AWSAccessKeyId", :value => "AKIAIAZ7FYZ3A7WS2EFQ"}
+  %input{:type => :hidden, :name => :acl,  :value => :private}
+  %input{:type => :hidden, :name => :success_action_status, :value => "200"}
+  %input{:type => :hidden, :name => :policy}
+  %input{:type => :hidden, :name => :signature}
+
+  .fileupload-content
+    .fileupload-progress
+  .file-upload
+    %label.fileinput-button
+      %span Upload Document
+      %input{:type => :file, :name => :file}
+
+
+	<%= form_for "admin", :id => "file_upload", :remote => true, :url => { :action => "create" },
+	                      :html => { :action    => 'https://jesuspower.s3.amazonaws.com', 
+		                             :multipart =>  true
+		                               } do |f| %>

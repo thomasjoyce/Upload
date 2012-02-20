@@ -1,0 +1,91 @@
+<%= s3_http_upload_tag     :key => 'uploads', 
+                           :bucket => 'jesuspower',
+                           :content_type => 'image/jpeg', 
+                           :redirect => image_processing_url,
+                           :acl => 'public-read',
+                           :max_filesize => 5.megabytes,
+                           :submit_button => '<input type="submit" value="Upload" class="button" id="upload-button">',
+                           :form => {:style => 'display: inline;'} %>
+
+
+
+<div id="your_documents">
+ 
+<%= form_for "admin", :id => "file_upload",  :url => { :action => "create" },
+                      :html => { :action    => 'https://jesuspower.s3.amazonaws.com', 
+	                             :multipart =>  true
+	                               } do |f| %>
+    <%= f.hidden_field :key %>
+    <%= f.hidden_field :AWSAccessKeyId, { :value => 'AKIAIAZ7FYZ3A7WS2EFQ' } %>
+	<%= f.hidden_field :acl,  { :value =>'private' } %>
+	<%= f.hidden_field :success_action_status, { :value => '200' } %>
+	<%= f.hidden_field :policy %>
+	<%= f.hidden_field :signature %>
+
+ <div class='file_upload-content'>
+    <div class='file_upload-progress'></div>
+  </div>
+
+ <div class='file_upload'>
+    <label class='fileinput-button'>
+      <span>Upload Document</span>
+
+     <%= f.file_field :type => :file, :name => :file %>
+    </label>
+  </div>
+
+
+    <button type="submit" class="start">Start upload</button>
+    <button type="reset" class="cancel">Cancel upload</button>
+    <button type="button" class="delete">Delete files</button>
+  
+ <% end %>
+
+</div>
+
+<script>
+
+$(function() {
+  $('#file_upload').fileupload({
+    forceIframeTransport: true,    // VERY IMPORTANT.  you will get 405 Method Not Allowed if you don't add this.
+    autoUpload: true,
+    add: function (event, data) {
+      $.ajax({
+        url: "/documents",
+        type: 'POST',
+        dataType: 'json',
+        data: {doc: {title: data.files[0].name}},
+        async: false,
+        success: function(retdata) {
+	       alert ("Hello");
+          // after we created our document in rails, it is going to send back JSON of they key,
+          // policy, and signature.  We will put these into our form before it gets submitted to amazon.
+          $('#file_upload').find('input[name=key]').val(retdata.key);
+          $('#file_upload').find('input[name=policy]').val(retdata.policy);
+          $('#file_upload').find('input[name=signature]').val(retdata.signature);
+        }
+        
+      });
+       alert ("Submit!");
+      data.submit();
+    },
+    send: function(e, data) {
+      // show a loading spinner because now the form will be submitted to amazon, 
+      // and the file will be directly uploaded there, via an iframe in the background. 
+      $('#loading').show();
+    },
+    fail: function(e, data) {
+      console.log('fail');
+      console.log(data);
+    },
+    done: function (event, data) {
+      // here you can perform an ajax call to get your documents to display on the screen.
+      $('#your_documents').load("/documents?for_item=1234");
+      
+      // hide the loading spinner that we turned on earlier.
+      $j('#loading').hide();
+    },
+  });
+});
+
+</script>
